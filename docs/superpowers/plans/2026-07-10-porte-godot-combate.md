@@ -502,7 +502,6 @@ func test_qtd_lanes_pesos():
 func test_lanes_distintas():
 	var lanes = EnemyAI.escolher_lanes_ameacadas(2, func(_a, _b): return 0)
 	assert_eq(lanes.size(), 2)
-	assert_eq(lanes[0], lanes.duplicate()[0]) # sanidade
 	assert_ne(lanes[0], lanes[1])
 
 func test_tres_lanes_retorna_todas():
@@ -1400,9 +1399,12 @@ func test_level1_instancia_sem_erro():
 	var inst = cena.instantiate()
 	add_child_autofree(inst)
 	await wait_frames(3)
-	# achou um player vivo e ao menos 1 inimigo
-	var players = get_tree().get_nodes_in_group("") # fallback
-	assert_true(inst.get_child_count() > 0, "Level1 montou nodes filhos")
+	# _ready montou o mundo: ambiente + player + inimigos + sistemas
+	assert_gt(inst.get_child_count(), 0, "Level1 montou nodes filhos")
+	var players = inst.find_children("*", "PlayerCombatant", true, false)
+	assert_gt(players.size(), 0, "ha um PlayerCombatant na cena")
+	var enemies = inst.find_children("*", "EnemyCombatant", true, false)
+	assert_gt(enemies.size(), 0, "ha ao menos 1 EnemyCombatant na cena")
 ```
 
 - [ ] **Step 4: Importar e rodar smoke**
