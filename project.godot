@@ -1,0 +1,19 @@
+config_version=5
+
+[application]
+
+config/name="RPG Tatico Mobile"
+run/main_scene="res://scenes/MainMenu.tscn"
+config/features=PackedStringArray("4.7", "Mobile")
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="mobile"
