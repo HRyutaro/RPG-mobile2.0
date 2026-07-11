@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Habilidade" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/habilidade.gd" id="1_bpk8c"]
+
+[resource]
+script = ExtResource("1_bpk8c")
+nome = "Golpe Sagrado"
+descricao = "Investida sagrada num alvo."
+dano_min = 10
+dano_max = 16

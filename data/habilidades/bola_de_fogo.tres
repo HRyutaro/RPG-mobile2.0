@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Habilidade" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/habilidade.gd" id="1_b0wvw"]
+
+[resource]
+script = ExtResource("1_b0wvw")
+nome = "Bola de Fogo"
+descricao = "Explosao de fogo em area."
+custo_mana = 30
+dano_min = 8
+dano_max = 14
+alvo = 1
+cast_time = 1.0

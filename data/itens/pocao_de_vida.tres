@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Item" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item.gd" id="1_j5uvq"]
+
+[resource]
+script = ExtResource("1_j5uvq")
+nome = "Pocao de Vida"

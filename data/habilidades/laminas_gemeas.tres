@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Habilidade" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/habilidade.gd" id="1_ea5ug"]
+
+[resource]
+script = ExtResource("1_ea5ug")
+nome = "Laminas Gemeas"
+descricao = "Golpe duplo perfurante."
+custo_mana = 25
+dano_min = 13
+dano_max = 19
+cast_time = 0.8

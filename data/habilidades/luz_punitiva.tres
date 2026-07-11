@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Habilidade" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/habilidade.gd" id="1_3dn1c"]
+
+[resource]
+script = ExtResource("1_3dn1c")
+nome = "Luz Punitiva"
+descricao = "Explosao de luz em todos os inimigos."
+custo_mana = 30
+dano_min = 7
+dano_max = 12
+alvo = 1
+cast_time = 1.0

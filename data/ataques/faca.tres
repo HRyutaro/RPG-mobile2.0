@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AtaqueInimigo" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/hit_data.gd" id="1_p4evo"]
+[ext_resource type="Script" path="res://scripts/data/ataque_inimigo.gd" id="2_urp7a"]
+
+[sub_resource type="Resource" id="Resource_jt1jt"]
+script = ExtResource("1_p4evo")
+
+[resource]
+script = ExtResource("2_urp7a")
+nome = "Ataque de Faca"
+hits = Array[ExtResource("1_p4evo")]([SubResource("Resource_jt1jt")])
