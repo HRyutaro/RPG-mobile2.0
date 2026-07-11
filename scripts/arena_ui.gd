@@ -98,7 +98,7 @@ func popular_habilidades(habs: Array) -> void:
 	for c in _hab_panel.get_children():
 		c.queue_free()
 	for h in habs:
-		var hb := h
+		var hb = h
 		var b := _make_btn(h.nome, func(): usar_habilidade.emit(hb))
 		_hab_panel.add_child(b)
 
