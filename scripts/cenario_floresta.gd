@@ -4,13 +4,13 @@ extends Node3D
 ## evitando a zona de combate central.
 
 const COLORMAP := "res://models/cenario/colormap.png"
-const ARVORES := ["SpringTree_01", "SpringTree_02", "SpringTree_03", "SpringTree_04", "SpringTree_05", "SpringTree_06", "FallenTree_01"]
+const ARVORES := ["SpringTree_01", "SpringTree_02", "SpringTree_03", "SpringTree_04", "SpringTree_05", "SpringTree_06"]
 const MIUDOS := ["Bush_01", "Bush_02", "Bush_03", "Rock_01", "Rock_02", "Rock_03", "Mushroom_03", "Mushroom_08"]
 
-# clareira central preservada (bem folgada, pois a camera e baixa e proxima)
-const COMBATE_X := 9.0
-const COMBATE_Z_MIN := -13.0
-const COMBATE_Z_MAX := 8.0
+# clareira central preservada bem grande (camera baixa/proxima + FallenTree removido)
+const COMBATE_X := 10.0
+const COMBATE_Z_MIN := -14.0
+const COMBATE_Z_MAX := 12.0
 
 var _mat: StandardMaterial3D
 var _rng := RandomNumberGenerator.new()

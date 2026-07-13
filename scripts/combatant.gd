@@ -55,6 +55,10 @@ func tocar_anim(nome: String) -> void:
 	if _model != null:
 		_model.tocar(nome)
 
+func ajustar_arma(offset: Vector3, rot: Vector3, escala: float) -> void:
+	if _model != null:
+		_model.ajustar_arma(offset, rot, escala)
+
 func adicionar_barra_flutuante(largura := 0.9, altura := 0.12, altura_cabeca := 2.0, cor_hp := Color(0.2, 0.85, 0.25)) -> void:
 	var barra := BarraVida3D.new()
 	barra.position = Vector3(0, altura_cabeca, 0)

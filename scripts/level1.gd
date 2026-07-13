@@ -29,6 +29,11 @@ const LANE_WIDTH := 2.0
 @export var arco_rot := Vector3(90, 0, 0) # deita o arco na vertical
 @export var arco_escala := 0.2
 
+@export_group("Arma inimigo (macho) — calibrar aqui")
+@export var arma_inimigo_offset := Vector3(0, 0, 0.25)
+@export var arma_inimigo_rot := Vector3.ZERO
+@export var arma_inimigo_escala := 0.2
+
 var _battle: BattleController
 var _reaction: ReactionController
 var _swipe: SwipeInput
@@ -49,6 +54,15 @@ func _process(dt: float) -> void:
 	if _cam != null and _player != null:
 		var alvo := cam_pos.x + _player.position.x * cam_seguir
 		_cam.position.x = lerpf(_cam.position.x, alvo, clampf(dt * cam_seguir_vel, 0.0, 1.0))
+	# ajuste de arma em tempo real: edite estes valores na aba Remote durante o Play
+	if _player != null:
+		if _player.tipo == CombatEnums.CharacterType.GATUNA:
+			_player.ajustar_arma(arco_offset, arco_rot, arco_escala)
+		else:
+			_player.ajustar_arma(arma_offset, arma_rot, arma_escala)
+	for e in _enemies:
+		if e != null:
+			e.ajustar_arma(arma_inimigo_offset, arma_inimigo_rot, arma_inimigo_escala)
 
 func _montar_ambiente() -> void:
 	var chao := MeshInstance3D.new()
@@ -173,9 +187,9 @@ func _spawn_enemies() -> void:
 		e.model_texturas = Personagens.tex_male(variante)
 		e.model_arma_fbx = Personagens.arma_male(randi() % 4)
 		e.model_arma_tex = Personagens.arma_tex()
-		e.model_arma_offset = arma_offset
-		e.model_arma_rot = arma_rot
-		e.model_arma_escala = arma_escala
+		e.model_arma_offset = arma_inimigo_offset
+		e.model_arma_rot = arma_inimigo_rot
+		e.model_arma_escala = arma_inimigo_escala
 		e.position = Vector3(-2.0 + i * 2.0, 0, inimigos_z)
 		# inimigos encaram o jogador (+z)
 		e.rotation_degrees = Vector3(0, 0, 0)

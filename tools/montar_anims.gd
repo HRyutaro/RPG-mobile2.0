@@ -15,7 +15,7 @@ const DIE_LEN := 1.7
 func _lib_female() -> void:
 	var base := "res://models/personagem/female/anim/"
 	var lib := AnimationLibrary.new()
-	_add(lib, "idle", base + "Female_Animation@Female_Idle.FBX", true)
+	_add(lib, "idle", base + "Female_Animation@Female_Sword_Stance.FBX", true) # pose de combate
 	_add(lib, "attack", base + "Female_Animation@Female_Sword_Attacks.FBX", false, ATTACK_LEN)
 	_add(lib, "damage", base + "Female_Animation@Female_Sword_Damage.FBX", false)
 	_add(lib, "die", base + "Female_Animation@Female_Sword_Die.FBX", false, DIE_LEN)
@@ -25,7 +25,7 @@ func _lib_female() -> void:
 func _lib_male() -> void:
 	var base := "res://models/personagem/male/anim/"
 	var lib := AnimationLibrary.new()
-	_add(lib, "idle", base + "Male_Animation@Male_Idle.FBX", true)
+	_add(lib, "idle", base + "Male_Animation@Male_Sword_Stance.FBX", true) # pose de combate
 	_add(lib, "attack", base + "Male_Animation@Male_Attacks.FBX", false, ATTACK_LEN)
 	_add(lib, "damage", base + "Male_Animation@Male_Damage.FBX", false)
 	_add(lib, "die", base + "Male_Animation@Male_Die.FBX", false, DIE_LEN)

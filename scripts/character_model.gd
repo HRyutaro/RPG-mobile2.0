@@ -18,6 +18,7 @@ extends Node3D
 var _anim: AnimationPlayer
 var _skel: Skeleton3D
 var _modelo: Node3D
+var _arma_mi: MeshInstance3D
 
 func montar() -> void:
 	if skeleton_fbx == null:
@@ -104,7 +105,14 @@ func _vestir_arma() -> void:
 	mi.position = arma_offset
 	mi.rotation_degrees = arma_rot
 	mi.scale = Vector3.ONE * arma_escala
+	_arma_mi = mi
 	winst.free()
+
+func ajustar_arma(offset: Vector3, rot: Vector3, escala: float) -> void:
+	if _arma_mi != null:
+		_arma_mi.position = offset
+		_arma_mi.rotation_degrees = rot
+		_arma_mi.scale = Vector3.ONE * escala
 
 func tocar(nome: String) -> void:
 	if _anim != null and _anim.has_animation(nome):
