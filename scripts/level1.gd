@@ -196,6 +196,7 @@ func _spawn_enemies() -> void:
 		add_child(e)
 		e.preparar()
 		e.adicionar_barra_flutuante(barra_largura, barra_altura, barra_altura_cabeca, Color(0.95, 0.15, 0.15))
+		e.adicionar_colisor_clique()
 		_enemies.append(e)
 
 func _montar_sistemas() -> void:

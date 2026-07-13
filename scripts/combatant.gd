@@ -65,6 +65,18 @@ func adicionar_barra_flutuante(largura := 0.9, altura := 0.12, altura_cabeca := 
 	add_child(barra)
 	barra.setup(self, largura, altura, cor_hp)
 
+func adicionar_colisor_clique() -> void:
+	var area := Area3D.new()
+	area.set_meta("inimigo", self)
+	var cs := CollisionShape3D.new()
+	var shape := CapsuleShape3D.new()
+	shape.radius = 0.45
+	shape.height = 1.7
+	cs.shape = shape
+	cs.position = Vector3(0, 0.9, 0)
+	area.add_child(cs)
+	add_child(area)
+
 func esta_vivo() -> bool:
 	return vitals != null and vitals.esta_vivo()
 
