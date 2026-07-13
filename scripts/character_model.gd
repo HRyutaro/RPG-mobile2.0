@@ -1,11 +1,14 @@
 class_name CharacterModel
 extends Node3D
 ## Instancia um esqueleto FBX (com malha) e aplica uma AnimationLibrary.
-## Uso: setar skeleton_fbx + anim_lib (+ cor), chamar montar(), depois tocar(...).
+## Opcional: "veste" pecas modulares (torso/pernas/cabeca) com texturas no
+## mesmo esqueleto (os ossos das pecas sao subconjunto do esqueleto principal).
 
 @export var skeleton_fbx: PackedScene
 @export var anim_lib: AnimationLibrary
-@export var cor: Color = Color(0.85, 0.72, 0.62) # material chapado cartoon (pele)
+@export var cor: Color = Color(0.85, 0.72, 0.62) # cor chapada quando NAO ha pecas
+@export var partes: Array[PackedScene] = []      # FBX das pecas modulares
+@export var texturas: Array[Texture2D] = []      # textura de cada peca (paralelo a partes)
 
 var _anim: AnimationPlayer
 var _skel: Skeleton3D
@@ -18,11 +21,10 @@ func montar() -> void:
 	add_child(_modelo)
 	_skel = _modelo.find_child("Skeleton3D", true, false)
 
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = cor
-	for mi in _modelo.find_children("*", "MeshInstance3D", true, false):
-		mi.visible = true # a malha base costuma vir escondida ("(Hide)")
-		mi.material_override = mat
+	if partes.is_empty():
+		_aplicar_cor_chapada()
+	else:
+		_vestir_pecas()
 
 	_anim = AnimationPlayer.new()
 	_modelo.add_child(_anim) # parent = modelo: root_node padrao resolve "Skeleton3D:osso"
@@ -31,12 +33,41 @@ func montar() -> void:
 	_anim.animation_finished.connect(_ao_terminar)
 	tocar("idle")
 
+func _aplicar_cor_chapada() -> void:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = cor
+	for mi in _modelo.find_children("*", "MeshInstance3D", true, false):
+		mi.visible = true
+		mi.material_override = mat
+
+func _vestir_pecas() -> void:
+	# esconde a malha base de referencia
+	for mi in _modelo.find_children("*", "MeshInstance3D", true, false):
+		mi.visible = false
+	for i in partes.size():
+		if partes[i] == null:
+			continue
+		var pinst = partes[i].instantiate()
+		var fontes = pinst.find_children("*", "MeshInstance3D", true, false)
+		if fontes.is_empty():
+			pinst.free(); continue
+		var src: MeshInstance3D = fontes[0]
+		var mi := MeshInstance3D.new()
+		mi.mesh = src.mesh
+		mi.skin = src.skin
+		var mat := StandardMaterial3D.new()
+		if i < texturas.size() and texturas[i] != null:
+			mat.albedo_texture = texturas[i]
+		mi.material_override = mat
+		_skel.add_child(mi)
+		mi.skeleton = mi.get_path_to(_skel) # skin resolve pelos nomes de osso
+		pinst.free()
+
 func tocar(nome: String) -> void:
 	if _anim != null and _anim.has_animation(nome):
 		_anim.play(nome)
 
 func _ao_terminar(nome: String) -> void:
-	# volta ao idle apos animacoes de uma vez (attack/damage); die e idle ficam
 	if nome != "idle" and nome != "die":
 		tocar("idle")
 

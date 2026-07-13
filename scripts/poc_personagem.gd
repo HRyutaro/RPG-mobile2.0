@@ -29,6 +29,18 @@ func _ready() -> void:
 	_cm = CharacterModel.new()
 	_cm.skeleton_fbx = load("res://models/personagem/female/Female_Animation_Skeleton.FBX")
 	_cm.anim_lib = load("res://models/personagem/female/female_anims.res")
+	var pfbx: Array[PackedScene] = [
+		load("res://models/personagem/female/Female_Base_Torso.FBX"),
+		load("res://models/personagem/female/Female_Base_Legs.FBX"),
+		load("res://models/personagem/female/Female_Head_1.FBX"),
+	]
+	var ptex: Array[Texture2D] = [
+		load("res://models/personagem/female/tex/Female_Base_Torso.tga"),
+		load("res://models/personagem/female/tex/Female_Base_Legs.tga"),
+		load("res://models/personagem/female/tex/Female_Head_1.tga"),
+	]
+	_cm.partes = pfbx
+	_cm.texturas = ptex
 	add_child(_cm)
 	_cm.montar()
 
