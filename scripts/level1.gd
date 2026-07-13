@@ -55,6 +55,8 @@ func _montar_ambiente() -> void:
 	cam.position = cam_pos
 	cam.rotation_degrees = cam_rot_deg
 	cam.fov = cam_fov
+	# mantem a largura (as 3 lanes) sempre visivel; retrato mostra mais na vertical
+	cam.keep_aspect = Camera3D.KEEP_WIDTH
 	add_child(cam)
 
 	# floresta preenchendo o campo visivel
