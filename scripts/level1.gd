@@ -16,6 +16,9 @@ const LANE_WIDTH := 2.0
 @export var barra_altura := 0.11
 @export var barra_altura_cabeca := 2.0
 
+@export_group("Posicoes")
+@export var inimigos_z := -4.0 # distancia dos inimigos (mais negativo = mais longe)
+
 var _battle: BattleController
 var _reaction: ReactionController
 var _swipe: SwipeInput
@@ -148,7 +151,7 @@ func _spawn_enemies() -> void:
 		e.model_anims = Personagens.anims_male()
 		e.model_partes = Personagens.partes_male(variante)
 		e.model_texturas = Personagens.tex_male(variante)
-		e.position = Vector3(-2.0 + i * 2.0, 0, -6)
+		e.position = Vector3(-2.0 + i * 2.0, 0, inimigos_z)
 		# inimigos encaram o jogador (+z)
 		e.rotation_degrees = Vector3(0, 0, 0)
 		add_child(e)
