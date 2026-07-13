@@ -55,6 +55,7 @@ func _executar_ataque_basico() -> void:
 	_ocupado = true
 	_ui_interativo(false)
 	_garantir_alvo()
+	player.tocar_anim("attack")
 	if _alvo != null:
 		_alvo.receber_dano(player.rolar_dano_basico())
 	_fim_da_acao()
@@ -63,6 +64,7 @@ func _executar_habilidade(h: Habilidade) -> void:
 	_ocupado = true
 	_ui_interativo(false)
 	_garantir_alvo()
+	player.tocar_anim("attack")
 	var vivo := func(e): return e != null and e.esta_vivo()
 	var alvos := Targeting.resolver(h.alvo, _alvo, enemies, vivo)
 	for a in alvos:
@@ -91,6 +93,7 @@ func _turno_inimigo() -> void:
 		for hit in atk.hits:
 			var qtd := EnemyAI.escolher_qtd_lanes(randi_range(0, 99))
 			var ameacadas := EnemyAI.escolher_lanes_ameacadas(qtd, func(a, b): return randi_range(a, b - 1))
+			inimigo.tocar_anim("attack")
 			_log("%s ataca!" % inimigo.combatant_name)
 			var outcome: int = await reaction.rodar_hit(player, inimigo, hit, ameacadas)
 			_log(_texto_outcome(outcome))

@@ -45,12 +45,20 @@ func _spawn_player() -> void:
 		CombatEnums.CharacterType.GATUNA:
 			_player.combatant_name = "Gatuna"; _player.max_hp = 10; _player.max_mana = 80
 	_player.basic_dmg_min = 1; _player.basic_dmg_max = 2
-	_player.position = Vector3(0, 1, 0)
+	_player.model_fbx = load("res://models/personagem/female/Female_Animation_Skeleton.FBX")
+	_player.model_anims = load("res://models/personagem/female/female_anims.res")
+	_player.model_cor = _cor_classe(_player.tipo)
+	_player.position = Vector3(0, 0, 0)
 	add_child(_player)
 	_player.preparar()
-	_player.set_cor(Color(0.3, 0.5, 1.0))
 	_player.mover_para(CombatEnums.Lane.CENTER)
 	_carregar_habilidades()
+
+func _cor_classe(tipo: int) -> Color:
+	match tipo:
+		CombatEnums.CharacterType.MAGO: return Color(0.62, 0.45, 0.85)
+		CombatEnums.CharacterType.GATUNA: return Color(0.4, 0.6, 0.42)
+		_: return Color(0.45, 0.55, 0.9)
 
 func _carregar_habilidades() -> void:
 	var dir := "res://data/habilidades/"
@@ -77,10 +85,14 @@ func _spawn_enemies() -> void:
 		if atk != null:
 			var la: Array[AtaqueInimigo] = [atk]
 			e.ataques = la
-		e.position = Vector3(-2.0 + i * 2.0, 1, -6)
+		e.model_fbx = load("res://models/personagem/male/Male_Animation_Skeleton.FBX")
+		e.model_anims = load("res://models/personagem/male/male_anims.res")
+		e.model_cor = Color(0.82, 0.4, 0.34)
+		e.position = Vector3(-2.0 + i * 2.0, 0, -6)
+		# inimigos olham para o jogador
+		e.rotation_degrees = Vector3(0, 180, 0)
 		add_child(e)
 		e.preparar()
-		e.set_cor(Color(0.9, 0.3, 0.3))
 		_enemies.append(e)
 
 func _montar_sistemas() -> void:

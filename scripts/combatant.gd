@@ -7,12 +7,25 @@ extends Node3D
 @export var basic_dmg_min := 4
 @export var basic_dmg_max := 9
 
+@export_group("Visual")
+@export var model_fbx: PackedScene
+@export var model_anims: AnimationLibrary
+@export var model_cor: Color = Color(0.85, 0.72, 0.62)
+
 var vitals: Vitals
 var _mesh: MeshInstance3D
+var _model: CharacterModel
 
 func preparar() -> void:
 	vitals = Vitals.new(max_hp, max_mana)
-	if _mesh == null:
+	if model_fbx != null:
+		_model = CharacterModel.new()
+		_model.skeleton_fbx = model_fbx
+		_model.anim_lib = model_anims
+		_model.cor = model_cor
+		add_child(_model)
+		_model.montar()
+	elif _mesh == null:
 		_mesh = MeshInstance3D.new()
 		_mesh.mesh = CapsuleMesh.new()
 		add_child(_mesh)
@@ -24,12 +37,21 @@ func set_cor(c: Color) -> void:
 	m.albedo_color = c
 	_mesh.material_override = m
 
+func tocar_anim(nome: String) -> void:
+	if _model != null:
+		_model.tocar(nome)
+
 func esta_vivo() -> bool:
 	return vitals != null and vitals.esta_vivo()
 
 func receber_dano(a: int) -> void:
-	if vitals != null:
-		vitals.receber_dano(a)
+	if vitals == null:
+		return
+	vitals.receber_dano(a)
+	if not vitals.esta_vivo():
+		tocar_anim("die")
+	else:
+		tocar_anim("damage")
 
 func rolar_dano_basico() -> int:
 	return CombatMath.rolar_dano(basic_dmg_min, basic_dmg_max)
