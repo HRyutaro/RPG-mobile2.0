@@ -34,6 +34,11 @@ func _montar_ambiente() -> void:
 	cam.rotation_degrees = Vector3(-25, 0, 0)
 	add_child(cam)
 
+	# floresta ao redor da arena (centro entre heroi e inimigos)
+	var floresta := CenarioFloresta.new()
+	add_child(floresta)
+	floresta.montar(Vector3(0, 0, -3))
+
 func _spawn_player() -> void:
 	_player = PlayerCombatant.new()
 	_player.tipo = GameState.classe_escolhida
