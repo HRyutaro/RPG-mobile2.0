@@ -19,6 +19,12 @@ const LANE_WIDTH := 2.0
 @export_group("Posicoes")
 @export var inimigos_z := -4.0 # distancia dos inimigos (mais negativo = mais longe)
 
+@export_group("Mira (enquadramento)")
+@export var mira_dist_single := 3.0
+@export var mira_altura_single := 1.6
+@export var mira_dist_aoe := 7.0
+@export var mira_altura_aoe := 3.0
+
 @export_group("Arma (espada/adaga/cajado) — calibrar aqui")
 @export var arma_offset := Vector3.ZERO
 @export var arma_rot := Vector3.ZERO
@@ -39,6 +45,7 @@ var _reaction: ReactionController
 var _swipe: SwipeInput
 var _ui: ArenaUI
 var _lanes_chao: LanesChao
+var _targeting: TargetingController
 var _cam: Camera3D
 var _player: PlayerCombatant
 var _enemies: Array[EnemyCombatant] = []
@@ -51,7 +58,8 @@ func _ready() -> void:
 	_battle.iniciar()
 
 func _process(dt: float) -> void:
-	if _cam != null and _player != null:
+	# follow da camera (pausado durante a mira, que dirige a camera)
+	if _cam != null and _player != null and not (_targeting != null and _targeting.ativo):
 		var alvo := cam_pos.x + _player.position.x * cam_seguir
 		_cam.position.x = lerpf(_cam.position.x, alvo, clampf(dt * cam_seguir_vel, 0.0, 1.0))
 	# ajuste de arma em tempo real: edite estes valores na aba Remote durante o Play
@@ -230,6 +238,18 @@ func _montar_sistemas() -> void:
 	_ui.usar_item.connect(_battle._on_item)
 	_ui.parry.connect(_swipe.pressionar_parry)
 	_battle.log_msg.connect(_ui.set_log)
+
+	# mira com zoom + escolha de alvo
+	_targeting = TargetingController.new()
+	_targeting.configurar(_cam)
+	_targeting.dist_single = mira_dist_single
+	_targeting.altura_single = mira_altura_single
+	_targeting.dist_aoe = mira_dist_aoe
+	_targeting.altura_aoe = mira_altura_aoe
+	add_child(_targeting)
+	_battle.targeting = _targeting
+	_ui.confirmar_mira.connect(_targeting.confirmar)
+	_ui.voltar_mira.connect(_targeting.cancelar)
 
 func _carregar_itens() -> Array[Item]:
 	var res: Array[Item] = []

@@ -16,3 +16,5 @@ func test_level1_instancia_sem_erro():
 	assert_gt(floresta.size(), 0, "ha floresta no Level1")
 	if floresta.size() > 0:
 		assert_gt(floresta[0].get_child_count(), 0, "floresta tem props")
+	var alvos = inst.find_children("*", "TargetingController", true, false)
+	assert_gt(alvos.size(), 0, "ha TargetingController no Level1")
