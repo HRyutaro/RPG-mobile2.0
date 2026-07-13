@@ -3,6 +3,12 @@ extends Node3D
 
 const LANE_WIDTH := 2.0
 
+## Configuravel no Inspector (selecione o node Level1 na cena)
+@export_group("Camera")
+@export var cam_pos := Vector3(0, 2.2, 3.8)
+@export var cam_rot_deg := Vector3(-12, 0, 0)
+@export_range(20, 90) var cam_fov := 58.0
+
 var _battle: BattleController
 var _reaction: ReactionController
 var _swipe: SwipeInput
@@ -40,10 +46,15 @@ func _montar_ambiente() -> void:
 	add_child(we)
 
 	var cam := Camera3D.new()
-	cam.position = Vector3(0, 2.6, 4.6)
-	cam.rotation_degrees = Vector3(-15, 0, 0)
-	cam.fov = 55
+	cam.position = cam_pos
+	cam.rotation_degrees = cam_rot_deg
+	cam.fov = cam_fov
 	add_child(cam)
+
+	# floresta preenchendo o campo visivel
+	var floresta := CenarioFloresta.new()
+	add_child(floresta)
+	floresta.montar()
 
 func _material_grama() -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
@@ -62,11 +73,6 @@ func _material_grama() -> StandardMaterial3D:
 	mat.uv1_scale = Vector3(16, 16, 1)
 	mat.roughness = 1.0
 	return mat
-
-	# floresta ao redor da arena (centro entre heroi e inimigos)
-	var floresta := CenarioFloresta.new()
-	add_child(floresta)
-	floresta.montar(Vector3(0, 0, -3))
 
 func _spawn_player() -> void:
 	_player = PlayerCombatant.new()

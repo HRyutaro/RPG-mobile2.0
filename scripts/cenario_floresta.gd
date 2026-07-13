@@ -1,27 +1,41 @@
 class_name CenarioFloresta
 extends Node3D
-## Espalha props de floresta (LowpolyNature) num anel ao redor da arena.
+## Preenche o campo visivel com props de floresta (LowpolyNature),
+## evitando a zona de combate central.
 
 const COLORMAP := "res://models/cenario/colormap.png"
 const ARVORES := ["SpringTree_01", "SpringTree_02", "SpringTree_03", "SpringTree_04", "SpringTree_05", "SpringTree_06", "FallenTree_01"]
 const MIUDOS := ["Bush_01", "Bush_02", "Bush_03", "Rock_01", "Rock_02", "Rock_03", "Mushroom_03", "Mushroom_08"]
 
+# zona de combate a preservar (retangulo em torno de heroi/inimigos)
+const COMBATE_X := 5.0
+const COMBATE_Z_MIN := -8.5
+const COMBATE_Z_MAX := 2.5
+
 var _mat: StandardMaterial3D
 var total := 0
 
-func montar(centro: Vector3) -> void:
+func montar(_centro := Vector3.ZERO) -> void:
 	seed(20260710)
 	_mat = StandardMaterial3D.new()
 	_mat.albedo_texture = load(COLORMAP)
-	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST # atlas de cor: sem bleeding
-	# anel proximo denso + backdrop distante + miudos perto (cenario cheio)
-	total += _scatter(ARVORES, centro, 5.5, 14.0, 45, 0.28, 0.45)
-	total += _scatter(ARVORES, centro, 14.0, 30.0, 55, 0.35, 0.60)
-	total += _scatter(MIUDOS, centro, 4.5, 13.0, 40, 0.40, 0.80)
+	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED # normais dos FBX podem vir invertidas
+	# arvores preenchendo o campo (fundo + flancos), fora da zona de combate
+	total += _fill(ARVORES, -24.0, 24.0, -32.0, 6.0, 90, 0.28, 0.55)
+	# miudos mais perto/densos
+	total += _fill(MIUDOS, -16.0, 16.0, -18.0, 6.0, 55, 0.4, 0.8)
 
-func _scatter(nomes: Array, centro: Vector3, r_in: float, r_out: float, qtd: int, s_min: float, s_max: float) -> int:
+func _fill(nomes: Array, x0: float, x1: float, z0: float, z1: float, qtd: int, s_min: float, s_max: float) -> int:
 	var ok := 0
-	for i in qtd:
+	var tentativas := 0
+	while ok < qtd and tentativas < qtd * 4:
+		tentativas += 1
+		var x := randf_range(x0, x1)
+		var z := randf_range(z0, z1)
+		# pula a zona de combate
+		if absf(x) < COMBATE_X and z > COMBATE_Z_MIN and z < COMBATE_Z_MAX:
+			continue
 		var nome: String = nomes[randi() % nomes.size()]
 		var ps = load("res://models/cenario/%s.fbx" % nome)
 		if ps == null:
@@ -29,9 +43,7 @@ func _scatter(nomes: Array, centro: Vector3, r_in: float, r_out: float, qtd: int
 		var inst = ps.instantiate()
 		for mi in inst.find_children("*", "MeshInstance3D", true, false):
 			mi.material_override = _mat
-		var ang := randf() * TAU
-		var r: float = lerpf(r_in, r_out, randf())
-		inst.position = centro + Vector3(cos(ang) * r, 0, sin(ang) * r)
+		inst.position = Vector3(x, 0, z)
 		inst.rotation.y = randf() * TAU
 		inst.scale = Vector3.ONE * randf_range(s_min, s_max)
 		add_child(inst)
