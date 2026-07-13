@@ -7,6 +7,7 @@ var player: PlayerCombatant
 var enemies: Array[EnemyCombatant] = []
 var reaction: ReactionController
 var ui = null # ArenaUI (setado pelo Level1)
+var targeting = null # TargetingController (setado pelo Level1)
 var itens: Array[Item] = []
 var turn_delay := 1.7      # respiro entre acoes
 var pausa_pre_ataque := 1.1 # beat antes do inimigo atacar
@@ -30,14 +31,37 @@ func _turno_jogador() -> void:
 
 func _on_atacar() -> void:
 	if not _pronto(): return
-	_executar_ataque_basico()
+	_mira_e_executar(TargetingController.Modo.SINGLE, func():
+		_executar_ataque_basico())
 
 func _on_habilidade(h: Habilidade) -> void:
 	if not _pronto(): return
-	if not player.vitals.gastar_mana(h.custo_mana):
+	if player.vitals.mana < h.custo_mana:
 		_log("Mana insuficiente para %s." % h.nome)
 		return
-	_executar_habilidade(h)
+	var modo := TargetingController.Modo.SINGLE if h.alvo == CombatEnums.TargetMode.SINGLE else TargetingController.Modo.AOE
+	_mira_e_executar(modo, func():
+		player.vitals.gastar_mana(h.custo_mana)
+		_executar_habilidade(h))
+
+func _mira_e_executar(modo: int, acao: Callable) -> void:
+	_ocupado = true
+	if ui != null:
+		ui.set_menu_visivel(false) # tambem esconde o painel de habilidades
+		ui.mostrar_mira(true)
+	targeting.iniciar(enemies, modo)
+	await targeting.resolvido
+	if ui != null:
+		ui.mostrar_mira(false)
+	if not targeting.resultado_ok:
+		_ocupado = false
+		_turno_jogador()
+		return
+	if targeting.resultado_alvo != null:
+		_alvo = targeting.resultado_alvo
+	else:
+		_garantir_alvo()
+	acao.call()
 
 func _on_item() -> void:
 	if not _pronto(): return
