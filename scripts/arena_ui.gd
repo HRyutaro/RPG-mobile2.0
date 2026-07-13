@@ -5,6 +5,8 @@ signal atacar
 signal usar_habilidade(h)
 signal usar_item
 signal parry
+signal confirmar_mira
+signal voltar_mira
 
 var _player: PlayerCombatant
 var _enemies: Array = []
@@ -14,6 +16,8 @@ var _btn_atacar: Button
 var _btn_habs: Button
 var _btn_itens: Button
 var _parry_btn: Button
+var _btn_confirmar: Button
+var _btn_voltar: Button
 var _hab_panel: VBoxContainer
 var _hp_bar: ProgressBar
 var _mp_bar: ProgressBar
@@ -78,6 +82,23 @@ func _montar() -> void:
 	_parry_btn.visible = false
 	add_child(_parry_btn)
 
+	# botoes da mira (escondidos; so aparecem no modo de mira)
+	_btn_confirmar = _make_btn("Confirmar", func(): confirmar_mira.emit())
+	_btn_confirmar.anchor_left = 0.5; _btn_confirmar.anchor_top = 1.0
+	_btn_confirmar.anchor_right = 0.5; _btn_confirmar.anchor_bottom = 1.0
+	_btn_confirmar.offset_left = 10; _btn_confirmar.offset_top = -80
+	_btn_confirmar.offset_right = 180; _btn_confirmar.offset_bottom = -20
+	_btn_confirmar.visible = false
+	add_child(_btn_confirmar)
+
+	_btn_voltar = _make_btn("Voltar", func(): voltar_mira.emit())
+	_btn_voltar.anchor_left = 0.5; _btn_voltar.anchor_top = 1.0
+	_btn_voltar.anchor_right = 0.5; _btn_voltar.anchor_bottom = 1.0
+	_btn_voltar.offset_left = -180; _btn_voltar.offset_top = -80
+	_btn_voltar.offset_right = -10; _btn_voltar.offset_bottom = -20
+	_btn_voltar.visible = false
+	add_child(_btn_voltar)
+
 func _make_btn(txt: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = txt
@@ -125,6 +146,10 @@ func set_menu_interativo(v: bool) -> void:
 
 func mostrar_parry(v: bool) -> void:
 	if _parry_btn: _parry_btn.visible = v
+
+func mostrar_mira(v: bool) -> void:
+	if _btn_confirmar: _btn_confirmar.visible = v
+	if _btn_voltar: _btn_voltar.visible = v
 
 func set_log(txt: String) -> void:
 	if _log: _log.text = txt
