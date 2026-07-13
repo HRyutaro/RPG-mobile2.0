@@ -13,10 +13,11 @@ const COMBATE_Z_MIN := -10.0
 const COMBATE_Z_MAX := 6.0
 
 var _mat: StandardMaterial3D
+var _rng := RandomNumberGenerator.new()
 var total := 0
 
 func montar(_centro := Vector3.ZERO) -> void:
-	seed(20260710)
+	_rng.seed = 20260710 # RNG local: layout estavel sem travar o RNG global (contagem de inimigos)
 	_mat = StandardMaterial3D.new()
 	_mat.albedo_texture = load(COLORMAP)
 	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -31,12 +32,12 @@ func _fill(nomes: Array, x0: float, x1: float, z0: float, z1: float, qtd: int, s
 	var tentativas := 0
 	while ok < qtd and tentativas < qtd * 4:
 		tentativas += 1
-		var x := randf_range(x0, x1)
-		var z := randf_range(z0, z1)
+		var x := _rng.randf_range(x0, x1)
+		var z := _rng.randf_range(z0, z1)
 		# pula a zona de combate
 		if absf(x) < COMBATE_X and z > COMBATE_Z_MIN and z < COMBATE_Z_MAX:
 			continue
-		var nome: String = nomes[randi() % nomes.size()]
+		var nome: String = nomes[_rng.randi() % nomes.size()]
 		var ps = load("res://models/cenario/%s.fbx" % nome)
 		if ps == null:
 			continue
@@ -44,8 +45,8 @@ func _fill(nomes: Array, x0: float, x1: float, z0: float, z1: float, qtd: int, s
 		for mi in inst.find_children("*", "MeshInstance3D", true, false):
 			mi.material_override = _mat
 		inst.position = Vector3(x, 0, z)
-		inst.rotation.y = randf() * TAU
-		inst.scale = Vector3.ONE * randf_range(s_min, s_max)
+		inst.rotation.y = _rng.randf() * TAU
+		inst.scale = Vector3.ONE * _rng.randf_range(s_min, s_max)
 		add_child(inst)
 		ok += 1
 	return ok

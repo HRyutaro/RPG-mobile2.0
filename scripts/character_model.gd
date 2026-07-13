@@ -9,6 +9,11 @@ extends Node3D
 @export var cor: Color = Color(0.85, 0.72, 0.62) # cor chapada quando NAO ha pecas
 @export var partes: Array[PackedScene] = []      # FBX das pecas modulares
 @export var texturas: Array[Texture2D] = []      # textura de cada peca (paralelo a partes)
+@export var arma_fbx: PackedScene
+@export var arma_tex: Texture2D
+@export var arma_offset := Vector3.ZERO
+@export var arma_rot := Vector3.ZERO
+@export var arma_escala := 1.0
 
 var _anim: AnimationPlayer
 var _skel: Skeleton3D
@@ -25,6 +30,7 @@ func montar() -> void:
 		_aplicar_cor_chapada()
 	else:
 		_vestir_pecas()
+	_vestir_arma()
 
 	_anim = AnimationPlayer.new()
 	_modelo.add_child(_anim) # parent = modelo: root_node padrao resolve "Skeleton3D:osso"
@@ -76,6 +82,29 @@ func _vestir_pecas() -> void:
 			ba.add_child(mi)
 			mi.transform = src.transform
 		pinst.free()
+
+func _vestir_arma() -> void:
+	if arma_fbx == null or _skel == null:
+		return
+	var winst = arma_fbx.instantiate()
+	var fontes = winst.find_children("*", "MeshInstance3D", true, false)
+	if fontes.is_empty():
+		winst.free(); return
+	var src: MeshInstance3D = fontes[0]
+	var mi := MeshInstance3D.new()
+	mi.mesh = src.mesh
+	if arma_tex != null:
+		var m := StandardMaterial3D.new()
+		m.albedo_texture = arma_tex
+		mi.material_override = m
+	var ba := BoneAttachment3D.new()
+	ba.bone_name = "Character R Hand"
+	_skel.add_child(ba)
+	ba.add_child(mi)
+	mi.position = arma_offset
+	mi.rotation_degrees = arma_rot
+	mi.scale = Vector3.ONE * arma_escala
+	winst.free()
 
 func tocar(nome: String) -> void:
 	if _anim != null and _anim.has_animation(nome):

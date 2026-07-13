@@ -13,6 +13,11 @@ extends Node3D
 @export var model_cor: Color = Color(0.85, 0.72, 0.62)
 @export var model_partes: Array[PackedScene] = []
 @export var model_texturas: Array[Texture2D] = []
+@export var model_arma_fbx: PackedScene
+@export var model_arma_tex: Texture2D
+@export var model_arma_offset := Vector3.ZERO
+@export var model_arma_rot := Vector3.ZERO
+@export var model_arma_escala := 1.0
 
 var vitals: Vitals
 var _mesh: MeshInstance3D
@@ -27,6 +32,11 @@ func preparar() -> void:
 		_model.cor = model_cor
 		_model.partes = model_partes
 		_model.texturas = model_texturas
+		_model.arma_fbx = model_arma_fbx
+		_model.arma_tex = model_arma_tex
+		_model.arma_offset = model_arma_offset
+		_model.arma_rot = model_arma_rot
+		_model.arma_escala = model_arma_escala
 		add_child(_model)
 		_model.montar()
 	elif _mesh == null:

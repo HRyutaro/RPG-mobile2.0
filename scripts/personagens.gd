@@ -48,6 +48,20 @@ static func skeleton_male() -> PackedScene:
 static func anims_male() -> AnimationLibrary:
 	return load(M + "male_anims.res")
 
+const ARMAS := "res://models/armas/"
+
+static func arma_tex() -> Texture2D:
+	return load(ARMAS + "Weapons.png")
+
+static func arma_female(tipo: int) -> PackedScene:
+	match tipo:
+		CombatEnums.CharacterType.MAGO: return load(ARMAS + "Staff_01.FBX")
+		CombatEnums.CharacterType.GATUNA: return load(ARMAS + "Dagger.FBX")
+		_: return load(ARMAS + "Sword_01.FBX")
+
+static func arma_male() -> PackedScene:
+	return load(ARMAS + "Sword_01.FBX")
+
 const _MALE_TORSOS := ["Male_Torso_1.FBX", "Male_Torso_2.FBX", "Male_Torso_3.FBX"]
 const _MALE_TEX := ["tex/Male_Torso_1_Red.tga", "tex/Male_Torso_2_Green.tga", "tex/Male_Torso_3_Yellow.tga"]
 
