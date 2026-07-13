@@ -7,17 +7,18 @@ const COLORMAP := "res://models/cenario/colormap.png"
 const ARVORES := ["SpringTree_01", "SpringTree_02", "SpringTree_03", "SpringTree_04", "SpringTree_05", "SpringTree_06", "FallenTree_01"]
 const MIUDOS := ["Bush_01", "Bush_02", "Bush_03", "Rock_01", "Rock_02", "Rock_03", "Mushroom_03", "Mushroom_08"]
 
-# zona de combate a preservar (retangulo folgado em torno de heroi/inimigos/camera)
-const COMBATE_X := 6.5
-const COMBATE_Z_MIN := -10.0
-const COMBATE_Z_MAX := 6.0
+# clareira central preservada (bem folgada, pois a camera e baixa e proxima)
+const COMBATE_X := 9.0
+const COMBATE_Z_MIN := -13.0
+const COMBATE_Z_MAX := 8.0
 
 var _mat: StandardMaterial3D
 var _rng := RandomNumberGenerator.new()
 var total := 0
 
-func montar(_centro := Vector3.ZERO) -> void:
-	_rng.seed = 20260710 # RNG local: layout estavel sem travar o RNG global (contagem de inimigos)
+func montar(variacao := 0) -> void:
+	# layout fixo/deterministico por variacao (nao muda a cada partida)
+	_rng.seed = 20260710 + variacao
 	_mat = StandardMaterial3D.new()
 	_mat.albedo_texture = load(COLORMAP)
 	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST

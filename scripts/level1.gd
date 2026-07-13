@@ -81,10 +81,10 @@ func _montar_ambiente() -> void:
 	add_child(cam)
 	_cam = cam
 
-	# floresta preenchendo o campo visivel
+	# floresta: layout fixo com 2 variacoes, clareira central garantida
 	var floresta := CenarioFloresta.new()
 	add_child(floresta)
-	floresta.montar()
+	floresta.montar(randi() % 2)
 
 	# faixas de lane no chao (telegrafo do ataque inimigo)
 	_lanes_chao = LanesChao.new()
