@@ -19,10 +19,15 @@ const LANE_WIDTH := 2.0
 @export_group("Posicoes")
 @export var inimigos_z := -4.0 # distancia dos inimigos (mais negativo = mais longe)
 
-@export_group("Arma (na mao direita) — calibrar aqui")
+@export_group("Arma (espada/adaga/cajado) — calibrar aqui")
 @export var arma_offset := Vector3.ZERO
 @export var arma_rot := Vector3.ZERO
 @export var arma_escala := 0.25 # armas vem grandes (~4.5u); 0.25 ~= 1.1u
+
+@export_group("Arco (Gatuna) — segurado diferente")
+@export var arco_offset := Vector3.ZERO
+@export var arco_rot := Vector3(90, 0, 0) # deita o arco na vertical
+@export var arco_escala := 0.2
 
 var _battle: BattleController
 var _reaction: ReactionController
@@ -121,9 +126,14 @@ func _spawn_player() -> void:
 	_player.model_texturas = Personagens.tex_female(_player.tipo)
 	_player.model_arma_fbx = Personagens.arma_female(_player.tipo)
 	_player.model_arma_tex = Personagens.arma_tex()
-	_player.model_arma_offset = arma_offset
-	_player.model_arma_rot = arma_rot
-	_player.model_arma_escala = arma_escala
+	if _player.tipo == CombatEnums.CharacterType.GATUNA:
+		_player.model_arma_offset = arco_offset
+		_player.model_arma_rot = arco_rot
+		_player.model_arma_escala = arco_escala
+	else:
+		_player.model_arma_offset = arma_offset
+		_player.model_arma_rot = arma_rot
+		_player.model_arma_escala = arma_escala
 	_player.position = Vector3(0, 0, 0)
 	_player.rotation_degrees = Vector3(0, 180, 0) # encara os inimigos (-z)
 	add_child(_player)
@@ -161,7 +171,7 @@ func _spawn_enemies() -> void:
 		e.model_anims = Personagens.anims_male()
 		e.model_partes = Personagens.partes_male(variante)
 		e.model_texturas = Personagens.tex_male(variante)
-		e.model_arma_fbx = Personagens.arma_male()
+		e.model_arma_fbx = Personagens.arma_male(randi() % 4)
 		e.model_arma_tex = Personagens.arma_tex()
 		e.model_arma_offset = arma_offset
 		e.model_arma_rot = arma_rot

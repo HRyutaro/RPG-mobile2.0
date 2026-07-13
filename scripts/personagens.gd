@@ -56,11 +56,13 @@ static func arma_tex() -> Texture2D:
 static func arma_female(tipo: int) -> PackedScene:
 	match tipo:
 		CombatEnums.CharacterType.MAGO: return load(ARMAS + "Staff_01.FBX")
-		CombatEnums.CharacterType.GATUNA: return load(ARMAS + "Dagger.FBX")
+		CombatEnums.CharacterType.GATUNA: return load(ARMAS + "Bow.FBX") # arqueira
 		_: return load(ARMAS + "Sword_01.FBX")
 
-static func arma_male() -> PackedScene:
-	return load(ARMAS + "Sword_01.FBX")
+const _ARMAS_INIMIGO := ["Sword_01.FBX", "Sword_02.FBX", "Sword_03.FBX", "Dagger.FBX"]
+
+static func arma_male(variante: int) -> PackedScene:
+	return load(ARMAS + _ARMAS_INIMIGO[variante % _ARMAS_INIMIGO.size()])
 
 const _MALE_TORSOS := ["Male_Torso_1.FBX", "Male_Torso_2.FBX", "Male_Torso_3.FBX"]
 const _MALE_TEX := ["tex/Male_Torso_1_Red.tga", "tex/Male_Torso_2_Green.tga", "tex/Male_Torso_3_Yellow.tga"]
