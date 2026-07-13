@@ -7,11 +7,14 @@ func _init() -> void:
 	_lib_male()
 	quit()
 
+# "Sword_Attacks"/"Attacks" sao montagens de varios golpes; corta em ~1 golpe
+const ATTACK_LEN := 1.35
+
 func _lib_female() -> void:
 	var base := "res://models/personagem/female/anim/"
 	var lib := AnimationLibrary.new()
 	_add(lib, "idle", base + "Female_Animation@Female_Idle.FBX", true)
-	_add(lib, "attack", base + "Female_Animation@Female_Sword_Attacks.FBX", false)
+	_add(lib, "attack", base + "Female_Animation@Female_Sword_Attacks.FBX", false, ATTACK_LEN)
 	_add(lib, "damage", base + "Female_Animation@Female_Sword_Damage.FBX", false)
 	_add(lib, "die", base + "Female_Animation@Female_Sword_Die.FBX", false)
 	var err := ResourceSaver.save(lib, "res://models/personagem/female/female_anims.res")
@@ -21,13 +24,13 @@ func _lib_male() -> void:
 	var base := "res://models/personagem/male/anim/"
 	var lib := AnimationLibrary.new()
 	_add(lib, "idle", base + "Male_Animation@Male_Idle.FBX", true)
-	_add(lib, "attack", base + "Male_Animation@Male_Attacks.FBX", false)
+	_add(lib, "attack", base + "Male_Animation@Male_Attacks.FBX", false, ATTACK_LEN)
 	_add(lib, "damage", base + "Male_Animation@Male_Damage.FBX", false)
 	_add(lib, "die", base + "Male_Animation@Male_Die.FBX", false)
 	var err := ResourceSaver.save(lib, "res://models/personagem/male/male_anims.res")
 	print("[anims] male err=", err, " ", lib.get_animation_list())
 
-func _add(lib: AnimationLibrary, nome: String, fbx: String, loop: bool) -> void:
+func _add(lib: AnimationLibrary, nome: String, fbx: String, loop: bool, max_len := 0.0) -> void:
 	var ps = load(fbx)
 	if ps == null:
 		print("  FALHOU: ", fbx); return
@@ -36,6 +39,8 @@ func _add(lib: AnimationLibrary, nome: String, fbx: String, loop: bool) -> void:
 	if ap == null or ap.get_animation_list().is_empty():
 		print("  sem anim: ", fbx); inst.free(); return
 	var anim: Animation = ap.get_animation(ap.get_animation_list()[0]).duplicate()
+	if max_len > 0.0 and anim.length > max_len:
+		anim.length = max_len # corta a montagem em ~1 golpe
 	if loop:
 		anim.loop_mode = Animation.LOOP_LINEAR
 	lib.add_animation(nome, anim)

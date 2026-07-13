@@ -9,6 +9,11 @@ const LANE_WIDTH := 2.0
 @export var cam_rot_deg := Vector3(-12, 0, 0)
 @export_range(20, 90) var cam_fov := 58.0
 
+@export_group("Barra de vida (inimigos)")
+@export var barra_largura := 0.8
+@export var barra_altura := 0.11
+@export var barra_altura_cabeca := 2.0
+
 var _battle: BattleController
 var _reaction: ReactionController
 var _swipe: SwipeInput
@@ -99,6 +104,7 @@ func _spawn_player() -> void:
 	_player.rotation_degrees = Vector3(0, 180, 0) # encara os inimigos (-z)
 	add_child(_player)
 	_player.preparar()
+	_player.adicionar_barra_flutuante(barra_largura, barra_altura, barra_altura_cabeca, Color(0.25, 0.85, 0.35))
 	_player.mover_para(CombatEnums.Lane.CENTER)
 	_carregar_habilidades()
 
@@ -137,7 +143,7 @@ func _spawn_enemies() -> void:
 		e.rotation_degrees = Vector3(0, 0, 0)
 		add_child(e)
 		e.preparar()
-		e.adicionar_barra_flutuante()
+		e.adicionar_barra_flutuante(barra_largura, barra_altura, barra_altura_cabeca, Color(0.95, 0.15, 0.15))
 		_enemies.append(e)
 
 func _montar_sistemas() -> void:

@@ -8,8 +8,8 @@ var enemies: Array[EnemyCombatant] = []
 var reaction: ReactionController
 var ui = null # ArenaUI (setado pelo Level1)
 var itens: Array[Item] = []
-var turn_delay := 1.3      # respiro entre acoes
-var pausa_pre_ataque := 0.7 # beat antes do inimigo atacar
+var turn_delay := 1.7      # respiro entre acoes
+var pausa_pre_ataque := 1.1 # beat antes do inimigo atacar
 
 var _alvo: EnemyCombatant
 var _ocupado := false

@@ -21,10 +21,10 @@ func montar(_centro := Vector3.ZERO) -> void:
 	_mat.albedo_texture = load(COLORMAP)
 	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED # normais dos FBX podem vir invertidas
-	# arvores preenchendo o campo (fundo + flancos), fora da zona de combate — bem denso
-	total += _fill(ARVORES, -26.0, 26.0, -34.0, 8.0, 150, 0.28, 0.55)
+	# arvores preenchendo o campo (fundo + flancos) ao redor da clareira — bem denso
+	total += _fill(ARVORES, -28.0, 28.0, -36.0, 9.0, 240, 0.28, 0.55)
 	# miudos mais perto/densos
-	total += _fill(MIUDOS, -18.0, 18.0, -20.0, 8.0, 90, 0.4, 0.8)
+	total += _fill(MIUDOS, -20.0, 20.0, -22.0, 9.0, 140, 0.4, 0.8)
 
 func _fill(nomes: Array, x0: float, x1: float, z0: float, z1: float, qtd: int, s_min: float, s_max: float) -> int:
 	var ok := 0

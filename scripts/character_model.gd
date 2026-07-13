@@ -82,7 +82,13 @@ func tocar(nome: String) -> void:
 		_anim.play(nome)
 
 func _ao_terminar(nome: String) -> void:
-	if nome != "idle" and nome != "die":
+	if nome == "die":
+		# segura a ultima pose da morte (senao o esqueleto volta pra rest = "levanta")
+		if _anim.has_animation("die"):
+			_anim.play("die")
+			_anim.seek(_anim.get_animation("die").length, true)
+			_anim.pause()
+	elif nome != "idle":
 		tocar("idle")
 
 func get_skeleton() -> Skeleton3D:

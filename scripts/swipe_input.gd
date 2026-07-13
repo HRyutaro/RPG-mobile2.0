@@ -4,14 +4,17 @@ extends Node
 signal swipe(dir: int)
 signal parry
 
-@export var min_swipe_px := 40.0
+@export var min_swipe_px := 75.0
+@export var cooldown := 0.30 # tempo minimo entre trocas de lane
 
 var _ativo := false
 var _acc_x := 0.0
+var _next_swipe := 0.0
 
 func set_ativo(v: bool) -> void:
 	_ativo = v
 	_acc_x = 0.0
+	_next_swipe = 0.0
 
 func pressionar_parry() -> void:
 	parry.emit()
@@ -27,5 +30,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _acumular(dx: float) -> void:
 	_acc_x += dx
 	if absf(_acc_x) >= min_swipe_px:
-		swipe.emit(1 if _acc_x > 0 else -1)
+		var agora := Time.get_ticks_msec() / 1000.0
+		if agora >= _next_swipe:
+			swipe.emit(1 if _acc_x > 0 else -1)
+			_next_swipe = agora + cooldown
 		_acc_x = 0.0
