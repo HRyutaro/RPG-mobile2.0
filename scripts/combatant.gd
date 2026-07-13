@@ -45,6 +45,12 @@ func tocar_anim(nome: String) -> void:
 	if _model != null:
 		_model.tocar(nome)
 
+func adicionar_barra_flutuante() -> void:
+	var barra := BarraVida3D.new()
+	barra.position = Vector3(0, 2.0, 0)
+	add_child(barra)
+	barra.setup(self)
+
 func esta_vivo() -> bool:
 	return vitals != null and vitals.esta_vivo()
 

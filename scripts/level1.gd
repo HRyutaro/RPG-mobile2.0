@@ -13,6 +13,7 @@ var _battle: BattleController
 var _reaction: ReactionController
 var _swipe: SwipeInput
 var _ui: ArenaUI
+var _lanes_chao: LanesChao
 var _player: PlayerCombatant
 var _enemies: Array[EnemyCombatant] = []
 
@@ -55,6 +56,11 @@ func _montar_ambiente() -> void:
 	var floresta := CenarioFloresta.new()
 	add_child(floresta)
 	floresta.montar()
+
+	# faixas de lane no chao (telegrafo do ataque inimigo)
+	_lanes_chao = LanesChao.new()
+	add_child(_lanes_chao)
+	_lanes_chao.montar()
 
 func _material_grama() -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
@@ -131,6 +137,7 @@ func _spawn_enemies() -> void:
 		e.rotation_degrees = Vector3(0, 0, 0)
 		add_child(e)
 		e.preparar()
+		e.adicionar_barra_flutuante()
 		_enemies.append(e)
 
 func _montar_sistemas() -> void:
@@ -145,8 +152,9 @@ func _montar_sistemas() -> void:
 
 	_reaction = ReactionController.new()
 	_reaction.swipe_input = _swipe
-	_reaction.telegraph_show = func(lanes): _ui.mostrar_telegrafo(lanes)
-	_reaction.telegraph_hide = func(): _ui.esconder_telegrafo()
+	_reaction.telegraph_show = func(lanes): _lanes_chao.mostrar(lanes)
+	_reaction.telegraph_hide = func(): _lanes_chao.esconder()
+	_reaction.parry_show = func(v): _ui.mostrar_parry(v)
 	add_child(_reaction)
 
 	_battle = BattleController.new()

@@ -8,7 +8,8 @@ var enemies: Array[EnemyCombatant] = []
 var reaction: ReactionController
 var ui = null # ArenaUI (setado pelo Level1)
 var itens: Array[Item] = []
-var turn_delay := 0.6
+var turn_delay := 1.3      # respiro entre acoes
+var pausa_pre_ataque := 0.7 # beat antes do inimigo atacar
 
 var _alvo: EnemyCombatant
 var _ocupado := false
@@ -93,8 +94,9 @@ func _turno_inimigo() -> void:
 		for hit in atk.hits:
 			var qtd := EnemyAI.escolher_qtd_lanes(randi_range(0, 99))
 			var ameacadas := EnemyAI.escolher_lanes_ameacadas(qtd, func(a, b): return randi_range(a, b - 1))
+			_log("%s vai atacar..." % inimigo.combatant_name)
+			await get_tree().create_timer(pausa_pre_ataque).timeout
 			inimigo.tocar_anim("attack")
-			_log("%s ataca!" % inimigo.combatant_name)
 			var outcome: int = await reaction.rodar_hit(player, inimigo, hit, ameacadas)
 			_log(_texto_outcome(outcome))
 			if not player.esta_vivo():

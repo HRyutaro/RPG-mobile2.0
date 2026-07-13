@@ -4,6 +4,7 @@ extends Node
 var swipe_input: SwipeInput
 var telegraph_show: Callable = func(_lanes): pass
 var telegraph_hide: Callable = func(): pass
+var parry_show: Callable = func(_v): pass
 
 var _parry_pressed := false
 var _parry_time := -999.0
@@ -28,11 +29,13 @@ func rodar_hit(player: PlayerCombatant, atacante: EnemyCombatant, hit: HitData, 
 	swipe_input.parry.connect(on_parry)
 	swipe_input.set_ativo(true)
 	telegraph_show.call(ameacadas)
+	parry_show.call(true)
 
 	await get_tree().create_timer(total).timeout
 
 	swipe_input.set_ativo(false)
 	telegraph_hide.call()
+	parry_show.call(false)
 	swipe_input.swipe.disconnect(on_swipe)
 	swipe_input.parry.disconnect(on_parry)
 

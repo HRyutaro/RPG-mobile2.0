@@ -13,6 +13,7 @@ var _menu: Control
 var _btn_atacar: Button
 var _btn_habs: Button
 var _btn_itens: Button
+var _parry_btn: Button
 var _hab_panel: VBoxContainer
 var _hp_bar: ProgressBar
 var _mp_bar: ProgressBar
@@ -46,29 +47,36 @@ func _montar() -> void:
 	_log = Label.new(); _log.position = Vector2(20, 80)
 	add_child(_log)
 
-	# menu de acao
+	# menu de acao — canto inferior direito
 	_menu = VBoxContainer.new()
-	_menu.anchor_left = 0.5; _menu.anchor_top = 1.0
-	_menu.position = Vector2(-120, -180)
+	_menu.anchor_left = 1.0; _menu.anchor_top = 1.0
+	_menu.anchor_right = 1.0; _menu.anchor_bottom = 1.0
+	_menu.offset_left = -200; _menu.offset_top = -230
+	_menu.offset_right = -16; _menu.offset_bottom = -16
 	add_child(_menu)
 	_btn_atacar = _make_btn("Atacar", func(): atacar.emit())
 	_btn_habs = _make_btn("Habilidades", func(): _hab_panel.visible = not _hab_panel.visible)
 	_btn_itens = _make_btn("Itens", func(): usar_item.emit())
 	_menu.add_child(_btn_atacar); _menu.add_child(_btn_habs); _menu.add_child(_btn_itens)
 
-	# painel de habilidades
+	# painel de habilidades — acima do menu, no canto direito
 	_hab_panel = VBoxContainer.new()
-	_hab_panel.anchor_left = 0.5; _hab_panel.anchor_top = 1.0
-	_hab_panel.position = Vector2(60, -180)
+	_hab_panel.anchor_left = 1.0; _hab_panel.anchor_top = 1.0
+	_hab_panel.anchor_right = 1.0; _hab_panel.anchor_bottom = 1.0
+	_hab_panel.offset_left = -420; _hab_panel.offset_top = -230
+	_hab_panel.offset_right = -210; _hab_panel.offset_bottom = -16
 	_hab_panel.visible = false
 	add_child(_hab_panel)
 
-	# botao parry
-	var parry_btn := _make_btn("PARRY", func(): parry.emit())
-	parry_btn.anchor_left = 0.5; parry_btn.anchor_top = 1.0
-	parry_btn.position = Vector2(-60, -60)
-	parry_btn.custom_minimum_size = Vector2(180, 60)
-	add_child(parry_btn)
+	# botao parry — centro-baixo, escondido (so aparece no ataque inimigo)
+	_parry_btn = _make_btn("PARRY", func(): parry.emit())
+	_parry_btn.anchor_left = 0.5; _parry_btn.anchor_top = 1.0
+	_parry_btn.anchor_right = 0.5; _parry_btn.anchor_bottom = 1.0
+	_parry_btn.offset_left = -110; _parry_btn.offset_top = -110
+	_parry_btn.offset_right = 110; _parry_btn.offset_bottom = -30
+	_parry_btn.add_theme_font_size_override("font_size", 30)
+	_parry_btn.visible = false
+	add_child(_parry_btn)
 
 func _make_btn(txt: String, cb: Callable) -> Button:
 	var b := Button.new()
@@ -109,6 +117,9 @@ func set_menu_visivel(v: bool) -> void:
 func set_menu_interativo(v: bool) -> void:
 	for b in [_btn_atacar, _btn_habs, _btn_itens]:
 		if b: b.disabled = not v
+
+func mostrar_parry(v: bool) -> void:
+	if _parry_btn: _parry_btn.visible = v
 
 func set_log(txt: String) -> void:
 	if _log: _log.text = txt

@@ -7,10 +7,10 @@ const COLORMAP := "res://models/cenario/colormap.png"
 const ARVORES := ["SpringTree_01", "SpringTree_02", "SpringTree_03", "SpringTree_04", "SpringTree_05", "SpringTree_06", "FallenTree_01"]
 const MIUDOS := ["Bush_01", "Bush_02", "Bush_03", "Rock_01", "Rock_02", "Rock_03", "Mushroom_03", "Mushroom_08"]
 
-# zona de combate a preservar (retangulo em torno de heroi/inimigos)
-const COMBATE_X := 5.0
-const COMBATE_Z_MIN := -8.5
-const COMBATE_Z_MAX := 2.5
+# zona de combate a preservar (retangulo folgado em torno de heroi/inimigos/camera)
+const COMBATE_X := 6.5
+const COMBATE_Z_MIN := -10.0
+const COMBATE_Z_MAX := 6.0
 
 var _mat: StandardMaterial3D
 var total := 0
@@ -21,10 +21,10 @@ func montar(_centro := Vector3.ZERO) -> void:
 	_mat.albedo_texture = load(COLORMAP)
 	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED # normais dos FBX podem vir invertidas
-	# arvores preenchendo o campo (fundo + flancos), fora da zona de combate
-	total += _fill(ARVORES, -24.0, 24.0, -32.0, 6.0, 90, 0.28, 0.55)
+	# arvores preenchendo o campo (fundo + flancos), fora da zona de combate — bem denso
+	total += _fill(ARVORES, -26.0, 26.0, -34.0, 8.0, 150, 0.28, 0.55)
 	# miudos mais perto/densos
-	total += _fill(MIUDOS, -16.0, 16.0, -18.0, 6.0, 55, 0.4, 0.8)
+	total += _fill(MIUDOS, -18.0, 18.0, -20.0, 8.0, 90, 0.4, 0.8)
 
 func _fill(nomes: Array, x0: float, x1: float, z0: float, z1: float, qtd: int, s_min: float, s_max: float) -> int:
 	var ok := 0
