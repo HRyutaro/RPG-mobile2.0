@@ -19,20 +19,49 @@ func _ready() -> void:
 
 func _montar_ambiente() -> void:
 	var chao := MeshInstance3D.new()
-	var pm := PlaneMesh.new(); pm.size = Vector2(40, 40)
+	var pm := PlaneMesh.new(); pm.size = Vector2(60, 60)
 	chao.mesh = pm
-	var mat := StandardMaterial3D.new(); mat.albedo_color = Color(0.28, 0.45, 0.22)
-	chao.material_override = mat
+	chao.material_override = _material_grama()
 	add_child(chao)
 
 	var luz := DirectionalLight3D.new()
 	luz.rotation_degrees = Vector3(-50, -30, 0)
+	luz.light_energy = 1.1
 	add_child(luz)
 
+	var we := WorldEnvironment.new()
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.55, 0.72, 0.9) # ceu
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(0.55, 0.58, 0.6)
+	env.ambient_light_energy = 0.6
+	we.environment = env
+	add_child(we)
+
 	var cam := Camera3D.new()
-	cam.position = Vector3(0, 4.5, 8)
-	cam.rotation_degrees = Vector3(-25, 0, 0)
+	cam.position = Vector3(0, 3.4, 6.5)
+	cam.rotation_degrees = Vector3(-20, 0, 0)
+	cam.fov = 52
 	add_child(cam)
+
+func _material_grama() -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	var noise := FastNoiseLite.new()
+	noise.frequency = 0.9
+	var ntex := NoiseTexture2D.new()
+	ntex.width = 256
+	ntex.height = 256
+	ntex.seamless = true
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.20, 0.34, 0.16))
+	grad.set_color(1, Color(0.36, 0.52, 0.26))
+	ntex.color_ramp = grad
+	ntex.noise = noise
+	mat.albedo_texture = ntex
+	mat.uv1_scale = Vector3(16, 16, 1)
+	mat.roughness = 1.0
+	return mat
 
 	# floresta ao redor da arena (centro entre heroi e inimigos)
 	var floresta := CenarioFloresta.new()
@@ -52,8 +81,8 @@ func _spawn_player() -> void:
 	_player.basic_dmg_min = 1; _player.basic_dmg_max = 2
 	_player.model_fbx = Personagens.skeleton_female()
 	_player.model_anims = Personagens.anims_female()
-	_player.model_partes = Personagens.partes_female()
-	_player.model_texturas = Personagens.tex_female()
+	_player.model_partes = Personagens.partes_female(_player.tipo)
+	_player.model_texturas = Personagens.tex_female(_player.tipo)
 	_player.position = Vector3(0, 0, 0)
 	add_child(_player)
 	_player.preparar()
@@ -85,10 +114,11 @@ func _spawn_enemies() -> void:
 		if atk != null:
 			var la: Array[AtaqueInimigo] = [atk]
 			e.ataques = la
+		var variante := randi() % 3
 		e.model_fbx = Personagens.skeleton_male()
 		e.model_anims = Personagens.anims_male()
-		e.model_partes = Personagens.partes_male()
-		e.model_texturas = Personagens.tex_male()
+		e.model_partes = Personagens.partes_male(variante)
+		e.model_texturas = Personagens.tex_male(variante)
 		e.position = Vector3(-2.0 + i * 2.0, 0, -6)
 		# inimigos olham para o jogador
 		e.rotation_degrees = Vector3(0, 180, 0)

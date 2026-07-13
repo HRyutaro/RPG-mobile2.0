@@ -29,8 +29,8 @@ func _ready() -> void:
 	_cm = CharacterModel.new()
 	_cm.skeleton_fbx = Personagens.skeleton_female()
 	_cm.anim_lib = Personagens.anims_female()
-	_cm.partes = Personagens.partes_female()
-	_cm.texturas = Personagens.tex_female()
+	_cm.partes = Personagens.partes_female(CombatEnums.CharacterType.PALADINO)
+	_cm.texturas = Personagens.tex_female(CombatEnums.CharacterType.PALADINO)
 	add_child(_cm)
 	_cm.montar()
 
