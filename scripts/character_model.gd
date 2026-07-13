@@ -79,15 +79,31 @@ func _vestir_pecas() -> void:
 
 func tocar(nome: String) -> void:
 	if _anim != null and _anim.has_animation(nome):
+		_anim.speed_scale = 1.0
 		_anim.play(nome)
+
+func tocar_damage() -> void:
+	# a animacao de dano e uma montagem de varias reacoes; toca UMA aleatoria
+	if _anim == null or not _anim.has_animation("damage"):
+		return
+	var a := _anim.get_animation("damage")
+	var seg := 0.85
+	var n := maxi(1, int(a.length / seg))
+	var i := randi() % n
+	_anim.speed_scale = 1.0
+	_anim.play("damage")
+	_anim.seek(i * seg, true)
+	await get_tree().create_timer(seg).timeout
+	if _anim != null and _anim.current_animation == "damage":
+		tocar("idle")
 
 func _ao_terminar(nome: String) -> void:
 	if nome == "die":
-		# segura a ultima pose da morte (senao o esqueleto volta pra rest = "levanta")
+		# congela na ultima pose (caido) — senao o esqueleto volta pra rest = "levanta"
 		if _anim.has_animation("die"):
 			_anim.play("die")
 			_anim.seek(_anim.get_animation("die").length, true)
-			_anim.pause()
+			_anim.speed_scale = 0.0
 	elif nome != "idle":
 		tocar("idle")
 

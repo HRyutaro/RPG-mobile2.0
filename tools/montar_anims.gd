@@ -7,8 +7,10 @@ func _init() -> void:
 	_lib_male()
 	quit()
 
-# "Sword_Attacks"/"Attacks" sao montagens de varios golpes; corta em ~1 golpe
+# "Sword_Attacks"/"Attacks" sao montagens; corta em ~1 golpe.
+# "Die" tem queda + levantar no fim; corta na parte caida.
 const ATTACK_LEN := 1.35
+const DIE_LEN := 1.7
 
 func _lib_female() -> void:
 	var base := "res://models/personagem/female/anim/"
@@ -16,7 +18,7 @@ func _lib_female() -> void:
 	_add(lib, "idle", base + "Female_Animation@Female_Idle.FBX", true)
 	_add(lib, "attack", base + "Female_Animation@Female_Sword_Attacks.FBX", false, ATTACK_LEN)
 	_add(lib, "damage", base + "Female_Animation@Female_Sword_Damage.FBX", false)
-	_add(lib, "die", base + "Female_Animation@Female_Sword_Die.FBX", false)
+	_add(lib, "die", base + "Female_Animation@Female_Sword_Die.FBX", false, DIE_LEN)
 	var err := ResourceSaver.save(lib, "res://models/personagem/female/female_anims.res")
 	print("[anims] female err=", err, " ", lib.get_animation_list())
 
@@ -26,7 +28,7 @@ func _lib_male() -> void:
 	_add(lib, "idle", base + "Male_Animation@Male_Idle.FBX", true)
 	_add(lib, "attack", base + "Male_Animation@Male_Attacks.FBX", false, ATTACK_LEN)
 	_add(lib, "damage", base + "Male_Animation@Male_Damage.FBX", false)
-	_add(lib, "die", base + "Male_Animation@Male_Die.FBX", false)
+	_add(lib, "die", base + "Male_Animation@Male_Die.FBX", false, DIE_LEN)
 	var err := ResourceSaver.save(lib, "res://models/personagem/male/male_anims.res")
 	print("[anims] male err=", err, " ", lib.get_animation_list())
 

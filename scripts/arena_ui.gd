@@ -38,9 +38,9 @@ func _montar() -> void:
 		add_child(r)
 		_tel[lane] = r
 
-	# HUD do player
-	_hp_bar = ProgressBar.new(); _hp_bar.position = Vector2(20, 20); _hp_bar.size = Vector2(200, 24)
-	_mp_bar = ProgressBar.new(); _mp_bar.position = Vector2(20, 50); _mp_bar.size = Vector2(200, 18)
+	# HUD do player (canto superior esquerdo, colorido)
+	_hp_bar = _make_bar(Vector2(20, 20), Vector2(220, 26), Color(0.2, 0.85, 0.25))
+	_mp_bar = _make_bar(Vector2(20, 52), Vector2(220, 18), Color(0.25, 0.5, 0.95))
 	add_child(_hp_bar); add_child(_mp_bar)
 
 	# log
@@ -85,22 +85,27 @@ func _make_btn(txt: String, cb: Callable) -> Button:
 	b.pressed.connect(cb)
 	return b
 
+func _make_bar(pos: Vector2, tam: Vector2, cor: Color) -> ProgressBar:
+	var b := ProgressBar.new()
+	b.position = pos
+	b.size = tam
+	b.show_percentage = false
+	b.add_theme_stylebox_override("background", _sb(Color(0, 0, 0, 0.55)))
+	b.add_theme_stylebox_override("fill", _sb(cor))
+	return b
+
+func _sb(cor: Color) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = cor
+	s.set_corner_radius_all(3)
+	return s
+
 func bind_player(p: PlayerCombatant) -> void:
 	_player = p
 
 func set_enemies(arr: Array) -> void:
+	# inimigos usam barra flutuante 3D; sem barras no topo da tela
 	_enemies = arr
-	for b in _enemy_bars:
-		b.queue_free()
-	_enemy_bars.clear()
-	var i := 0
-	for e in arr:
-		var bar := ProgressBar.new()
-		bar.position = Vector2(20 + i * 210, 120)
-		bar.size = Vector2(200, 18)
-		add_child(bar)
-		_enemy_bars.append(bar)
-		i += 1
 
 func popular_habilidades(habs: Array) -> void:
 	for c in _hab_panel.get_children():
@@ -134,13 +139,11 @@ func esconder_telegrafo() -> void:
 
 func _process(_dt: float) -> void:
 	if _player != null and _player.vitals != null:
-		_hp_bar.max_value = _player.vitals.max_hp
-		_hp_bar.value = _player.vitals.hp
-		_mp_bar.max_value = max(1, _player.vitals.max_mana)
-		_mp_bar.value = _player.vitals.mana
-	for i in range(min(_enemy_bars.size(), _enemies.size())):
-		var e = _enemies[i]
-		if e != null and e.vitals != null:
-			_enemy_bars[i].max_value = e.vitals.max_hp
-			_enemy_bars[i].value = e.vitals.hp
-			_enemy_bars[i].visible = e.esta_vivo()
+		var v = _player.vitals
+		_hp_bar.max_value = v.max_hp
+		_hp_bar.value = v.hp
+		_mp_bar.max_value = max(1, v.max_mana)
+		_mp_bar.value = v.mana
+		var crit := float(v.hp) / float(max(1, v.max_hp)) <= 0.1
+		var sb: StyleBoxFlat = _hp_bar.get_theme_stylebox("fill")
+		sb.bg_color = Color(0.95, 0.15, 0.15) if crit else Color(0.2, 0.85, 0.25)

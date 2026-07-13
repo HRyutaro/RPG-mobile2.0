@@ -8,6 +8,8 @@ const LANE_WIDTH := 2.0
 @export var cam_pos := Vector3(0, 2.2, 3.8)
 @export var cam_rot_deg := Vector3(-12, 0, 0)
 @export_range(20, 90) var cam_fov := 58.0
+@export_range(0.0, 1.0) var cam_seguir := 0.7 # quanto a camera acompanha a lane do player
+@export var cam_seguir_vel := 6.0
 
 @export_group("Barra de vida (inimigos)")
 @export var barra_largura := 0.8
@@ -19,6 +21,7 @@ var _reaction: ReactionController
 var _swipe: SwipeInput
 var _ui: ArenaUI
 var _lanes_chao: LanesChao
+var _cam: Camera3D
 var _player: PlayerCombatant
 var _enemies: Array[EnemyCombatant] = []
 
@@ -28,6 +31,11 @@ func _ready() -> void:
 	_spawn_enemies()
 	_montar_sistemas()
 	_battle.iniciar()
+
+func _process(dt: float) -> void:
+	if _cam != null and _player != null:
+		var alvo := cam_pos.x + _player.position.x * cam_seguir
+		_cam.position.x = lerpf(_cam.position.x, alvo, clampf(dt * cam_seguir_vel, 0.0, 1.0))
 
 func _montar_ambiente() -> void:
 	var chao := MeshInstance3D.new()
@@ -58,6 +66,7 @@ func _montar_ambiente() -> void:
 	# mantem a largura (as 3 lanes) sempre visivel; retrato mostra mais na vertical
 	cam.keep_aspect = Camera3D.KEEP_WIDTH
 	add_child(cam)
+	_cam = cam
 
 	# floresta preenchendo o campo visivel
 	var floresta := CenarioFloresta.new()
@@ -106,7 +115,6 @@ func _spawn_player() -> void:
 	_player.rotation_degrees = Vector3(0, 180, 0) # encara os inimigos (-z)
 	add_child(_player)
 	_player.preparar()
-	_player.adicionar_barra_flutuante(barra_largura, barra_altura, barra_altura_cabeca, Color(0.25, 0.85, 0.35))
 	_player.mover_para(CombatEnums.Lane.CENTER)
 	_carregar_habilidades()
 

@@ -60,8 +60,8 @@ func receber_dano(a: int) -> void:
 	vitals.receber_dano(a)
 	if not vitals.esta_vivo():
 		tocar_anim("die")
-	else:
-		tocar_anim("damage")
+	elif _model != null:
+		_model.tocar_damage() # uma reacao aleatoria
 
 func rolar_dano_basico() -> int:
 	return CombatMath.rolar_dano(basic_dmg_min, basic_dmg_max)
