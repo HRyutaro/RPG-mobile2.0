@@ -14,9 +14,10 @@ func montar(centro: Vector3) -> void:
 	_mat = StandardMaterial3D.new()
 	_mat.albedo_texture = load(COLORMAP)
 	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST # atlas de cor: sem bleeding
-	# arvores mais afastadas e menores; miudos mais perto
-	total += _scatter(ARVORES, centro, 7.0, 20.0, 30, 0.30, 0.45)
-	total += _scatter(MIUDOS, centro, 5.0, 13.0, 20, 0.40, 0.75)
+	# anel proximo denso + backdrop distante + miudos perto (cenario cheio)
+	total += _scatter(ARVORES, centro, 5.5, 14.0, 45, 0.28, 0.45)
+	total += _scatter(ARVORES, centro, 14.0, 30.0, 55, 0.35, 0.60)
+	total += _scatter(MIUDOS, centro, 4.5, 13.0, 40, 0.40, 0.80)
 
 func _scatter(nomes: Array, centro: Vector3, r_in: float, r_out: float, qtd: int, s_min: float, s_max: float) -> int:
 	var ok := 0

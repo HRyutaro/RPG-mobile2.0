@@ -40,9 +40,9 @@ func _montar_ambiente() -> void:
 	add_child(we)
 
 	var cam := Camera3D.new()
-	cam.position = Vector3(0, 3.4, 6.5)
-	cam.rotation_degrees = Vector3(-20, 0, 0)
-	cam.fov = 52
+	cam.position = Vector3(0, 2.6, 4.6)
+	cam.rotation_degrees = Vector3(-15, 0, 0)
+	cam.fov = 55
 	add_child(cam)
 
 func _material_grama() -> StandardMaterial3D:
@@ -84,6 +84,7 @@ func _spawn_player() -> void:
 	_player.model_partes = Personagens.partes_female(_player.tipo)
 	_player.model_texturas = Personagens.tex_female(_player.tipo)
 	_player.position = Vector3(0, 0, 0)
+	_player.rotation_degrees = Vector3(0, 180, 0) # encara os inimigos (-z)
 	add_child(_player)
 	_player.preparar()
 	_player.mover_para(CombatEnums.Lane.CENTER)
@@ -120,8 +121,8 @@ func _spawn_enemies() -> void:
 		e.model_partes = Personagens.partes_male(variante)
 		e.model_texturas = Personagens.tex_male(variante)
 		e.position = Vector3(-2.0 + i * 2.0, 0, -6)
-		# inimigos olham para o jogador
-		e.rotation_degrees = Vector3(0, 180, 0)
+		# inimigos encaram o jogador (+z)
+		e.rotation_degrees = Vector3(0, 0, 0)
 		add_child(e)
 		e.preparar()
 		_enemies.append(e)

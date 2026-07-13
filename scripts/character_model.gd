@@ -54,13 +54,27 @@ func _vestir_pecas() -> void:
 		var src: MeshInstance3D = fontes[0]
 		var mi := MeshInstance3D.new()
 		mi.mesh = src.mesh
-		mi.skin = src.skin
 		var mat := StandardMaterial3D.new()
 		if i < texturas.size() and texturas[i] != null:
 			mat.albedo_texture = texturas[i]
 		mi.material_override = mat
-		_skel.add_child(mi)
-		mi.skeleton = mi.get_path_to(_skel) # skin resolve pelos nomes de osso
+		if src.skin != null:
+			# remapeia binds nao-resolviveis (ex: cabelo com "Character Head_2")
+			# para a cabeca real, para o skin resolver no esqueleto principal
+			var skin: Skin = src.skin.duplicate()
+			for b in skin.get_bind_count():
+				var bn := skin.get_bind_name(b)
+				if bn != "" and _skel.find_bone(bn) == -1:
+					skin.set_bind_name(b, "Character Head")
+			mi.skin = skin
+			_skel.add_child(mi)
+			mi.skeleton = mi.get_path_to(_skel) # skin resolve pelos nomes de osso
+		else:
+			var ba := BoneAttachment3D.new()
+			ba.bone_name = "Character Head"
+			_skel.add_child(ba)
+			ba.add_child(mi)
+			mi.transform = src.transform
 		pinst.free()
 
 func tocar(nome: String) -> void:

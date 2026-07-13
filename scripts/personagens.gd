@@ -21,8 +21,9 @@ static func partes_female(tipo: int) -> Array[PackedScene]:
 		CombatEnums.CharacterType.GATUNA: torso = "Female_Torso_3.FBX"
 	var a: Array[PackedScene] = [
 		load(F + torso),
-		load(F + "Female_Base_Legs.FBX"),
+		load(F + "Female_Legs_1.FBX"),   # calca
 		load(F + "Female_Head_1.FBX"),
+		load(F + "Female_Hair_1.FBX"),   # cabelo
 	]
 	return a
 
@@ -33,8 +34,9 @@ static func tex_female(tipo: int) -> Array[Texture2D]:
 		CombatEnums.CharacterType.GATUNA: t = "tex/Female_Torso_3_Green.tga"
 	var a: Array[Texture2D] = [
 		load(F + t),
-		load(F + "tex/Female_Base_Legs.tga"),
+		load(F + "tex/Female_Legs_1_Brown.tga"),
 		load(F + "tex/Female_Head_1.tga"),
+		load(F + "tex/Female_Hair_1.tga"),
 	]
 	return a
 
@@ -52,15 +54,17 @@ const _MALE_TEX := ["tex/Male_Torso_1_Red.tga", "tex/Male_Torso_2_Green.tga", "t
 static func partes_male(variante: int) -> Array[PackedScene]:
 	var a: Array[PackedScene] = [
 		load(M + _MALE_TORSOS[variante % _MALE_TORSOS.size()]),
-		load(M + "Male_Base_Legs.FBX"),
+		load(M + "Male_Legs_1.FBX"),   # calca
 		load(M + "Male_Head_1.FBX"),
+		load(M + "Male_Hair_1.FBX"),   # cabelo
 	]
 	return a
 
 static func tex_male(variante: int) -> Array[Texture2D]:
 	var a: Array[Texture2D] = [
 		load(M + _MALE_TEX[variante % _MALE_TEX.size()]),
-		load(M + "tex/Male_Base_Legs.tga"),
+		load(M + "tex/Male_Legs_1_Brown.tga"),
 		load(M + "tex/Male_Head_1.tga"),
+		load(M + "tex/Male_Hair_1.tga"),
 	]
 	return a
